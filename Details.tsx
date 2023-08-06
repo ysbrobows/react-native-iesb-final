@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -11,93 +11,51 @@ import {
   View,
 } from 'react-native';
 
-interface IUser {
+interface IFollowers {
   avatar_url: string;
-  name: string;
-  bio: string;
+  login: string;
 }
 
-interface IOwner {
-  avatar_url: string;
-  url: string;
-  followers_url: string;
-}
-
-interface IData {
-  id: string;
-  name: string;
-  owner: IOwner;
-  url: string;
-  language: string;
-}
-
-const Details = () => {
-  const [user, setUser] = useState<IUser>();
-  const [listRpos, setListRepos] = useState<IData[]>([]);
+const Details = ({ route }) => {
+  const [listRpos, setListRepos] = useState<IFollowers[]>([]);
+    const { followers_url } = route.params;
   //   const [isLoading, setIsLoading] = useState<Boolean>(true);
 
   const URL = 'https://api.github.com';
-  useEffect(() => {
-    // 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
-    fetch(`${URL}/user`, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer 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',
-      },
-    })
-      .then(response => response.json())
-      .then(json => {
-        // console.log(`RESPOSTA: ${JSON.stringify(json)}`);
-        setUser(json);
-      })
-      .catch(e => {
-        console.log(`Erro: ${e}`);
-      })
-      .finally(() => {
-        // setIsLoading(false);
-      });
-  });
 
   useEffect(() => {
-    fetch(`${URL}/users/ysbrobows/repos`, {
+    fetch(followers_url, {
       method: 'GET',
       headers: {
-        Authorization: 'Bearer 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',
+        Authorization: 'Bearer ',
       },
     })
-      .then(response => response.json())
-      .then(json => {
+      .then((response) => response.json())
+      .then((json) => {
         console.log(`Detalhes: ${JSON.stringify(json)}`);
         setListRepos(json);
       });
   }, []);
 
   return (
-    <SafeAreaView style={{flex: 1, marginTop: StatusBar.currentHeight || 0}}>
-      <View style={styles.imageView}>
-        <Image source={{uri: user?.avatar_url}} style={styles.image} />
-        <Text style={{fontSize: 24}}>{user?.name}</Text>
-        <Text style={{fontSize: 18, fontWeight: 'bold'}}>{user?.bio}</Text>
-      </View>
-      <View style={{padding: 8}}>
-        <Text style={{fontWeight: 'bold', fontSize: 16}}>Detalhes</Text>
+    <SafeAreaView style={{ flex: 1, marginTop: StatusBar.currentHeight || 0 }}>
+      <View style={{ padding: 8 }}>
+        <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Seguidores</Text>
       </View>
       <FlatList
         data={listRpos}
-        renderItem={({item, index}) => (
-          <TouchableOpacity>
-            <View
-              key={index}
-              style={{backgroundColor: '#FFF', marginTop: 8, padding: 8}}>
-              <Text>{}</Text>
-              <Text>{}</Text>
+        renderItem={({ item }) => (
+            <View style={{ backgroundColor: '#FFF', marginTop: 8, padding: 8 }}>
+              <Text>{item.login}</Text>
+              <Image
+                style={{ width: 50, height: 50, borderRadius: 25 }}
+                source={{ uri: item.avatar_url }}
+              />
             </View>
-          </TouchableOpacity>
         )}
-        keyExtractor={item => item.id}
         // ListHeaderComponent={
-        //   <View style={{padding: 8}}>
-        //     <Text style={{fontWeight: 'bold', fontSize: 16}}>Repositórios</Text>
+        //   <View style={{ padding: 8 }}>
+        //     <Text style={{ fontWeight: 'bold', fontSize: 16 }}>Repositórios</Text>
         //   </View>
         // }
         ListEmptyComponent={<ActivityIndicator size={'large'} color={'red'} />}

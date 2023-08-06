@@ -34,8 +34,8 @@ interface IData {
 
 const Home = ({ navigation }) => {
   
-    const handleButtonPress = () => {
-        navigation.navigate('Details');
+    const handleButtonPress = (followers_url) => {
+        navigation.navigate('Details', { followers_url });
     };
   const [user, setUser] = useState<IUser>();
   const [listRpos, setListRepos] = useState<IData[]>([]);
@@ -49,7 +49,7 @@ const Home = ({ navigation }) => {
     fetch(`${URL}/user`, {
       method: 'GET',
       headers: {
-        Authorization: 'Bearer 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',
+        Authorization: 'Bearer ',
       },
     })
       .then(response => response.json())
@@ -69,7 +69,7 @@ const Home = ({ navigation }) => {
     fetch(`${URL}/users/ysbrobows/repos`, {
       method: 'GET',
       headers: {
-        Authorization: 'Bearer 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',
+        Authorization: 'Bearer ',
       },
     })
       .then(response => response.json())
@@ -92,7 +92,7 @@ const Home = ({ navigation }) => {
       <FlatList
         data={listRpos}
         renderItem={({item, index}) => (
-          <TouchableOpacity onPress={() => handleButtonPress()}>
+          <TouchableOpacity onPress={() => handleButtonPress(item.owner.followers_url)}>
             <View
               key={index}
               style={{backgroundColor: '#FFF', marginTop: 8, padding: 8}}>
